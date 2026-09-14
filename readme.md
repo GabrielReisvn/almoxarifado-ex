@@ -1,155 +1,262 @@
-Markdown
+# 📦 AlmoxTech - Sistema de Gestão de Almoxarifado
+> **Solução Informatizada para Controle de Estoque e Embalagens Industriais**
 
+![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen)
+![Versão](https://img.shields.io/badge/Vers%C3%A3o-1.0.0-blue)
+![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-orange)
+![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
 
-# Sistema de Gestão de Estoque - Indústria de Embalagens
+---
 
-Sistema web para controle de almoxarifado, gerenciamento de estoque mínimo, rastreabilidade de movimentações e controle de especificações técnicas para embalagens (caixas de papelão, frascos plásticos e insumos).
-💻 Tecnologias Utilizadas
-Backend: Node.js, Express.js
+## 📑 Sumário
+1. [Descrição do Projeto](#-descrição-do-projeto)
+2. [Status do Projeto](#-status-do-projeto)
+3. [Funcionalidades e Requisitos](#-funcionalidades-e-requisitos)
+4. [Acesso ao Projeto e Como Executar](#-acesso-ao-projeto-e-como-executar)
+5. [Tecnologias Utilizadas](#-tecnologias-utilizadas)
+6. [Modelo de Banco de Dados (DER & Script SQL)](#-modelo-de-banco-de-dados-der--script-sql)
+7. [Arquitetura de Rotas da API (Mapeamento Backend)](#-arquitetura-de-rotas-da-api-mapeamento-backend)
+8. [Entregáveis e Critérios de Avaliação](#-entregáveis-e-critérios-de-avaliação)
+9. [Pessoas Contribuidoras / Desenvolvedoras](#-pessoas-contribuidoras--desenvolvedoras)
+10. [Licença](#-licença)
+11. [Conclusão](#-conclusão)
 
-Banco de Dados: SQLite3
+---
 
-Frontend: HTML5, JavaScript (ES6+), Tailwind CSS (via CDN)
+## 📝 Descrição do Projeto
 
-Arquitetura: REST API / SPA e Multi-Page Support
+O **AlmoxTech** é um sistema web desenvolvido para automatizar e otimizar a gestão de estoques em indústrias de embalagens (caixas de papelão, frascos plásticos, insumos de lacre e sinalização).
 
-📂 Estrutura do Projeto
-Plaintext
+O sistema resolve problemas críticos enfrentados por almoxarifados fabris, tais como:
+* Ruptura de estoque devido à falta de monitoramento do **estoque mínimo**.
+* Ausência de **rastreabilidade imutável** em saídas para a linha de produção.
+* Ineficiência em buscas de insumos por especificações técnicas (gramatura, capacidade, tipo de tampa, dimensões).
+* Erros de digitação e inconsistência de dados.
 
+Construído como uma aplicação de página única (*Single Page Application* - SPA), o sistema possui interface responsiva, alertas dinâmicos e persistência local via `localStorage`.
 
-almoxarifado-node/
-├── public/
-│   ├── index.html        # Interface SPA (Single Page Application) integrada
-│   ├── login.html        # Interface de Autenticação
-│   ├── dashboard.html    # Painel Principal
-│   ├── produtos.html     # Cadastro e Busca de Produtos
-│   └── estoque.html      # Gestão de Entradas, Saídas e Histórico
-├── almoxarifado.db       # Arquivo de Banco de Dados SQLite (gerado automaticamente)
-├── server.js             # Servidor HTTP e API REST
-├── package.json          # Dependências do Projeto
-└── README.md             # Documentação do Sistema
-⚙️ Instalação e Execução
-Pré-requisitos
-Node.js (versão 14.x ou superior)
+---
 
-npm (gerenciador de pacotes do Node)
+## 🚀 Status do Projeto
 
-Passo a Passo
-Instalar as dependências:
+> **Status:** ✅ Concluído e Pronto para Avaliação / Implantação.
 
-Bash
+Todas as telas, validações de formulário, regra de negócio para estoque mínimo, controle de sessão e histórico de rastreabilidade foram implementadas e testadas.
 
+---
 
-npm install
-Iniciar o servidor:
+## ✨ Funcionalidades e Requisitos
 
-Bash
+### 🔹 Requisitos Funcionais (RF)
 
+| Código | Descrição |
+| :--- | :--- |
+| **RF01** | **Autenticação de Usuários:** Permite login com credenciais corporativas e controle de sessão por perfil (Almoxarife, Gerente, Operador). |
+| **RF02** | **Painel Principal (Dashboard):** Exibe métricas em tempo real (Total de Produtos, Itens Críticos, Entradas do Mês, Saídas do Mês). |
+| **RF03** | **Cadastro de Embalagens:** Permite cadastrar, editar e excluir itens especificando SKU, Categoria, Nome, Especificações Técnicas, Peso Unitário, Estoque Inicial e Estoque Mínimo. |
+| **RF04** | **Pesquisa Reativa e Filtros:** Permite filtrar produtos instantaneamente por nome, SKU ou categoria sem recarregar a página. |
+| **RF05** | **Alerta Automático de Estoque Mínimo:** Dispara sinalizações visuais de emergência e um painel de alerta sempre que o saldo atual for inferior ao estoque mínimo. |
+| **RF06** | **Gestão de Movimentações:** Registra entradas (recebimentos/notas fiscais) e saídas (baixas para a linha de envase/produção). |
+| **RF07** | **Validação de Saldo:** Impede saídas superiores ao estoque disponível no almoxarifado. |
+| **RF08** | **Histórico de Auditoria Rastreável:** Mantém log imutável contendo data/hora, produto, tipo de movimentação, quantidade, operador responsável e observação/NF. |
 
-npm start
-Acessar a aplicação no navegador:
+### 🔸 Requisitos Não-Funcionais (RNF)
 
-Plaintext
+* **RNF01 - Usabilidade:** Interface intuitiva baseada no Tailwind CSS, com suporte a modo responsivo (desktop e dispositivos móveis).
+* **RNF02 - Desempenho:** Carregamento ultra-rápido via cliente (browser-side execution) sem dependências pesadas.
+* **RNF03 - Persistência de Dados:** Uso de `localStorage` para manter os dados salvos entre sessões, acompanhado de carga inicial (*seed data*).
+* **RNF04 - Integridade dos Dados:** Validação rigorosa de campos obrigatórios, impedindo duplicidade de SKUs e valores numéricos negativos.
 
+---
 
-http://localhost:3000
-🔑 Credenciais para Teste
-Ao iniciar o servidor pela primeira vez, o banco de dados é populado automaticamente com os seguintes usuários:
+## 💻 Acesso ao Projeto e Como Executar
 
-Nome,E-mail,Senha,Cargo
-Carlos Silva,carlos@embalagens.com,123456,Almoxarife
-Mariana Souza,mariana@embalagens.com,123456,Gerente de Produção
-João Pedro,joao@embalagens.com,123456,Operador de Estoque
+### Pré-requisitos
+Para rodar o projeto, você precisa apenas de um **navegador web moderno** (Google Chrome, Mozilla Firefox, Microsoft Edge ou Safari). Não é necessária instalação de ambiente backend ou Node.js para a versão frontend interativa.
 
-🗄️ Modelagem do Banco de Dados (almoxarifado.db)
-Tabela usuarios
-id (INTEGER PRIMARY KEY AUTOINCREMENT)
+### Passo a Passo de Execução
 
-nome (TEXT NOT NULL)
+1. **Clonar o Repositório:**
+   ```bash
+   git clone https://github.com/seu-usuario/almoxtech-gestao-estoque.git
+   ```
+2. **Navegar até a pasta do projeto:**
+   ```bash
+   cd almoxtech-gestao-estoque
+   ```
+3. **Executar a aplicação:**
+   * Basta dar um duplo clique no arquivo `index.html` ou abri-lo diretamente no navegador.
+   * *Opcional:* Se utilizar o VS Code, utilize a extensão **Live Server** para rodar em servidor local (`http://127.0.0.1:5500`).
 
-email (TEXT UNIQUE NOT NULL)
+---
 
-senha (TEXT NOT NULL)
+### 🔑 Credenciais para Teste Rápido (Acesso Avaliador)
 
-cargo (TEXT NOT NULL)
+Para facilitar o processo de correção/avaliação, o sistema conta com atalhos de preenchimento rápido na tela de login:
 
-Tabela categorias
-id (INTEGER PRIMARY KEY AUTOINCREMENT)
+| Usuário | E-mail Corporativo | Senha | Cargo |
+| :--- | :--- | :--- | :--- |
+| **Carlos Silva** | `carlos@embalagens.com` | `123456` | Almoxarife |
+| **Mariana Souza** | `mariana@embalagens.com` | `123456` | Gerente de Produção |
+| **João Pedro** | `joao@embalagens.com` | `123456` | Operador de Estoque |
 
-nome (TEXT NOT NULL)
+---
 
-descricao (TEXT)
+## 🛠 Tecnologias Utilizadas
 
-Tabela produtos
-id (INTEGER PRIMARY KEY AUTOINCREMENT)
+* **Linguagem Principal:** HTML5, CSS3 e JavaScript (ES6+ Vanilla).
+* **Estilização & UI:** [Tailwind CSS v3](https://tailwindcss.com/) (via CDN).
+* **Iconografia:** [FontAwesome 6 Free](https://fontawesome.com/).
+* **Tipografia:** [Google Fonts - Inter](https://fonts.google.com/specimen/Inter).
+* **Armazenamento Temporal:** HTML5 Web Storage API (`localStorage`).
 
-codigo_sku (TEXT UNIQUE NOT NULL)
+---
 
-nome (TEXT NOT NULL)
+## 🗄 Modelo de Banco de Dados (DER & Script SQL)
 
-id_categoria (INTEGER FK -> categorias.id)
+O sistema foi modelado segundo as melhores práticas de banco de dados relacionais para garantir a **3ª Forma Normal (3FN)** e integridade referencial.
 
-especificacoes (TEXT — gramatura, dimensões, tipo de tampa, capacidade)
+### Diagrama Entidade-Relacionamento (Conceitual)
 
-peso_kg (REAL NOT NULL)
+```
++-------------------+       1:N       +-------------------------+
+|      USUARIO      |----------------<|  MOVIMENTACAO_ESTOQUE   |
++-------------------+                 +-------------------------+
+| id_usuario (PK)   |                 | id_movimentacao (PK)    |
+| nome              |                 | id_produto (FK)         |
+| email (UNIQUE)    |                 | id_usuario (FK)         |
+| senha             |                 | tipo (ENTRADA/SAIDA)    |
+| cargo             |                 | quantidade              |
++-------------------+                 | data_hora               |
+                                      | observacao              |
++-------------------+       1:N       +-------------------------+
+|      PRODUTO      |----------------<|
++-------------------+                 
+| id_produto (PK)   |
+| codigo_sku(UNIQUE)|
+| nome              |
+| categoria         |
+| especificacoes    |
+| peso_kg           |
+| estoque_atual     |
+| estoque_minimo    |
++-------------------+
+```
 
-estoque_atual (INTEGER DEFAULT 0)
+### Script de Criação SQL (`almoxarifado_db.sql`)
 
-estoque_minimo (INTEGER DEFAULT 10)
+```sql
+-- 1. Criação do Banco de Dados
+CREATE DATABASE IF NOT EXISTS almoxarifado_db;
+USE almoxarifado_db;
 
-Tabela movimentacoes
-id (INTEGER PRIMARY KEY AUTOINCREMENT)
+-- 2. Tabela de Usuários / Operadores
+CREATE TABLE usuario (
+    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    cargo VARCHAR(50) NOT NULL,
+    data_criacao DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
-id_produto (INTEGER FK -> produtos.id)
+-- 3. Tabela de Produtos / Embalagens
+CREATE TABLE produto (
+    id_produto INT AUTO_INCREMENT PRIMARY KEY,
+    codigo_sku VARCHAR(30) UNIQUE NOT NULL,
+    nome VARCHAR(120) NOT NULL,
+    categoria VARCHAR(50) NOT NULL,
+    especificacoes TEXT NOT NULL,
+    peso_kg DECIMAL(8,3) NOT NULL,
+    estoque_atual INT DEFAULT 0,
+    estoque_minimo INT DEFAULT 10,
+    CONSTRAINT chk_peso_positivo CHECK (peso_kg > 0),
+    CONSTRAINT chk_estoque_minimo_positivo CHECK (estoque_minimo >= 0)
+);
 
-id_usuario (INTEGER FK -> usuarios.id)
+-- 4. Tabela de Movimentações de Estoque (Histórico de Rastreabilidade)
+CREATE TABLE movimentacao_estoque (
+    id_movimentacao INT AUTO_INCREMENT PRIMARY KEY,
+    id_produto INT NOT NULL,
+    id_usuario INT NOT NULL,
+    tipo ENUM('ENTRADA', 'SAIDA') NOT NULL,
+    quantidade INT NOT NULL,
+    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
+    observacao VARCHAR(255),
+    FOREIGN KEY (id_produto) REFERENCES produto(id_produto) ON DELETE CASCADE,
+    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario),
+    CONSTRAINT chk_qtd_positiva CHECK (quantidade > 0)
+);
 
-tipo (TEXT CHECK: 'ENTRADA' ou 'SAIDA')
+-- 5. Inserção de Dados Iniciais (Seed Data)
+INSERT INTO usuario (nome, email, senha, cargo) VALUES
+('Carlos Silva', 'carlos@embalagens.com', '123456', 'Almoxarife'),
+('Mariana Souza', 'mariana@embalagens.com', '123456', 'Gerente de Produção'),
+('João Pedro', 'joao@embalagens.com', '123456', 'Operador de Estoque');
 
-quantidade (INTEGER NOT NULL)
+INSERT INTO produto (codigo_sku, nome, categoria, especificacoes, peso_kg, estoque_atual, estoque_minimo) VALUES
+('PAP-300-01', 'Caixa Papelão Reforçada 30x20x15cm', 'Caixas de Papelão', 'Gramatura: 400g/m², Papelão Duplo Ondulado', 0.350, 150, 50),
+('FRA-500-02', 'Frasco Plástico PET 500ml', 'Frascos Plásticos', 'Capacidade: 500ml, Tampa Rosca Lacrada HDPE', 0.045, 12, 100),
+('PAP-100-03', 'Caixa Papelão Padrão 15x15x10cm', 'Caixas de Papelão', 'Gramatura: 250g/m², Papelão Simples', 0.120, 800, 200),
+('FRA-1000-04', 'Frasco Plástico PEAD 1 Litro', 'Frascos Plásticos', 'Capacidade: 1000ml, Tampa Graduada Flip-Top', 0.085, 45, 80),
+('LAC-050-05', 'Fita Adesiva Transparente 50mmx100m', 'Insumos de Lacre', 'Largura: 50mm, Adesivo Hot-Melt Alta Fixação', 0.220, 300, 50);
+```
 
-data_hora (DATETIME DEFAULT CURRENT_TIMESTAMP)
+---
 
-observacao (TEXT)
+## 🌐 Arquitetura de Rotas da API (Mapeamento Backend)
 
-📋 Funcionalidades Implementadas
-RF01 - Autenticação e Acesso: Tela de login com validação de credenciais, tratamento de erros e sessão ativa.
+Caso a aplicação seja integrada a uma API REST Backend (ex: Node.js/Express, Python/FastAPI ou Java/Spring), as rotas planejadas são:
 
-RF02 - Dashboard Principal: Apresentação de usuário logado, opção de encerramento de sessão (logout) e atalhos rápidos.
+### Autenticação
+* `POST /api/v1/auth/login` - Autentica usuário e retorna Token JWT.
+* `POST /api/v1/auth/logout` - Encerra a sessão ativa.
 
-RF03 - Gestão de Produtos: CRUD completo (Criar, Consultar, Editar e Excluir) com suporte a especificações de embalagens (gramaturas, dimensões e capacidade).
+### Produtos / Embalagens
+* `GET /api/v1/produtos` - Lista produtos (suporta filtros query: `?busca=...&categoria=...`).
+* `GET /api/v1/produtos/:id` - Obtém detalhes de uma embalagem específica.
+* `POST /api/v1/produtos` - Cadastra uma nova embalagem no acervo.
+* `PUT /api/v1/produtos/:id` - Atualiza dados cadastrais de um produto.
+* `DELETE /api/v1/produtos/:id` - Remove um produto sem histórico ativo.
 
-RF04 - Busca Reativa: Filtro dinâmico em tempo real por nome do produto ou código SKU.
+### Movimentações de Estoque
+* `GET /api/v1/movimentacoes` - Traz o histórico consolidado de auditoria.
+* `POST /api/v1/movimentacoes` - Processa um novo lançamento de Entrada ou Saída com atualização atômica de saldo.
 
-RF05 - Validação de Dados: Impedimento de dados vazios ou inconsistentes no front-end e no back-end.
+---
 
-RF06 - Lançamentos de Estoque: Módulo de entrada (+) e saída (-) com atualização instantânea do saldo em estoque.
+## 📦 Entregáveis e Critérios de Avaliação
 
-RF07 - Alertas de Estoque Mínimo: Identificação visual e mensagens de aviso automáticas para produtos com saldo abaixo do limite configurado.
+O projeto atende integralmente aos critérios solicitados para avaliação acadêmica/técnica:
 
-RF08 - Audit e Rastreabilidade: Histórico imutável gravando data/hora, tipo de operação, quantidade, produto e usuário responsável.
+1. **Interface SPA funcional (`index.html`)**: Tela de login, Dashboard, Cadastro CRUD, Gestão de Movimentações e Central de Documentação inclusa no próprio aplicativo.
+2. **Requisitos Funcionais e Não-Funcionais explicitados**: Mapeamento completo no código e neste documento.
+3. **Validação de Formulários**: Impede envio de campos vazios, inconsistências de tipo de dados e registros inválidos.
+4. **Mecanismo de Estoque Mínimo**: Banner de alerta de alta visibilidade e destaque dinâmico de itens críticos.
+5. **Rastreabilidade**: Registro detalhado com hora exata e identificação do responsável.
 
-🛣️ Endpoints da API REST
+---
 
-Método,Rota,Descrição
-POST,/api/login,Autentica o usuário e retorna o perfil
-GET,/api/categorias,Lista todas as categorias de produtos
-GET,/api/produtos,Lista os produtos (aceita filtro via query string ?q=)
-POST,/api/produtos,Cadastra um novo produto
-PUT,/api/produtos/:id,Atualiza os dados de um produto
-DELETE,/api/produtos/:id,Remove um produto do banco de dados
-GET,/api/movimentacoes,Retorna o histórico de movimentações
-POST,/api/movimentacoes,Registra uma nova entrada ou saída
+## 👥 Pessoas Contribuidoras / Desenvolvedoras
 
-🎯 Mapeamento de Entregas da Atividade Prática
+| Foto | Nome / Integrantes | Papel no Projeto | Redes / Contato |
+| :---: | :--- | :--- | :--- |
+| 🧑‍💻 | **[Nome do Aluno 1 / Desenvolvedor]** | Frontend Developer & UI Designer | [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white)](#) |
+| 🧑‍💻 | **[Nome do Aluno 2 / Desenvolvedor]** | Modelagem de Dados & QA Tester | [![GitHub](https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white)](#) |
 
-N°,Entrega,Status,Implementação
-1,Lista de requisitos funcionais,✅ Concluído,Documentado na seção Funcionalidades Implementadas
-2,Diagrama entidade relacionamento (DER),✅ Concluído,Mapeado na estrutura DDL do banco SQLite
-3,Script SQL e população do banco,✅ Concluído,Automático no server.js (popula 3+ registros por tabela)
-4,Interface de autenticação,✅ Concluído,public/login.html e no SPA index.html
-5,Interface principal,✅ Concluído,public/dashboard.html e no SPA index.html
-6,Interface cadastro de produto,✅ Concluído,public/produtos.html e no SPA index.html
-7,Interface gestão de estoque,✅ Concluído,public/estoque.html e no SPA index.html
-8,Casos de Teste,✅ Concluído,Validado via formulários com bloqueios de entrada/saída inconsistente
-9,Requisitos de infraestrutura,✅ Concluído,Ambiente Node.js + Express + SQLite3
+* **Disciplina:** Programação Web / Banco de Dados / Engenharia de Software
+* **Instituição:** Insira o Nome da Faculdade / Universidade
+
+---
+
+## 📜 Licença
+
+Este projeto é distribuído sob a licença **MIT**. Consulte o arquivo `LICENSE` para obter mais detalhes.
+
+---
+
+## 🎯 Conclusão
+
+O **AlmoxTech** demonstra como uma solução web leve e bem estruturada pode transformar a rotina operacional de uma indústria de embalagens, substituindo planilhas frágeis por um sistema seguro, visual e automatizado.
