@@ -3,7 +3,6 @@
 
 ![Status](https://img.shields.io/badge/Status-Conclu%C3%ADdo-brightgreen)
 ![Versão](https://img.shields.io/badge/Vers%C3%A3o-1.0.0-blue)
-![Licença](https://img.shields.io/badge/Licen%C3%A7a-MIT-orange)
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?logo=tailwind-css&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript&logoColor=black)
@@ -20,8 +19,7 @@
 7. [Arquitetura de Rotas da API (Mapeamento Backend)](#-arquitetura-de-rotas-da-api-mapeamento-backend)
 8. [Entregáveis e Critérios de Avaliação](#-entregáveis-e-critérios-de-avaliação)
 9. [Pessoas Contribuidoras / Desenvolvedoras](#-pessoas-contribuidoras--desenvolvedoras)
-10. [Licença](#-licença)
-11. [Conclusão](#-conclusão)
+10. [Conclusão](#-conclusão)
 
 ---
 
@@ -251,11 +249,6 @@ O projeto atende integralmente aos critérios solicitados para avaliação acad�
 
 ---
 
-## 📜 Licença
-
-Este projeto é distribuído sob a licença **MIT**. Consulte o arquivo `LICENSE` para obter mais detalhes.
-
----
 
 ## 🎯 Conclusão
 
