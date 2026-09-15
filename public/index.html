@@ -3,1333 +3,406 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AlmoxTech - Gestão de Estoque de Embalagens</title>
-    <!-- Tailwind CSS CDN -->
+    <title>Gestão Almoxarifado</title>
+
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- FontAwesome Icons CDN -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts Inter -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <style>
-        body {
-            font-family: 'Inter', sans-serif;
-        }
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-        .fade-in {
-            animation: fadeIn 0.25s ease-in-out forwards;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(6px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-    </style>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script src="script.js" defer></script>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col antialiased">
 
-    <!-- App Main Header (Shown when logged in) -->
-    <header id="appHeader" class="hidden bg-slate-900 text-white shadow-lg sticky top-0 z-40">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <!-- Brand Logo -->
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('dashboard')">
-                <div class="bg-indigo-600 p-2 rounded-lg text-white font-black text-xl flex items-center justify-center w-10 h-10 shadow-md">
-                    <i class="fa-solid font-bold fa-box-open"></i>
-                </div>
-                <div>
-                    <span class="text-lg font-bold tracking-tight text-white block leading-tight">Almox<span class="text-indigo-400">Tech</span></span>
-                    <span class="text-xs text-slate-400 block leading-none">Indústria de Embalagens</span>
-                </div>
-            </div>
+<body class="bg-blue-100 min-h-screen">
 
-            <!-- Header Navigation Shortcuts -->
-            <nav class="hidden md:flex items-center space-x-1">
-                <button id="navBtnDashboard" onclick="navigateTo('dashboard')" class="px-3 py-2 rounded-md text-sm font-medium transition text-indigo-400 bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-chart-pie mr-1.5"></i> Dashboard
-                </button>
-                <button id="navBtnProdutos" onclick="navigateTo('produtos')" class="px-3 py-2 rounded-md text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-boxes-stacked mr-1.5"></i> Cad. Produtos
-                </button>
-                <button id="navBtnEstoque" onclick="navigateTo('estoque')" class="px-3 py-2 rounded-md text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-arrow-right-arrow-left mr-1.5"></i> Gestão Estoque
-                </button>
-                <button id="navBtnDocs" onclick="navigateTo('docs')" class="px-3 py-2 rounded-md text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white">
-                    <i class="fa-solid fa-file-contract mr-1.5"></i> Requisitos / DER
-                </button>
-            </nav>
+<!-- LOGIN -->
+<section id="loginSection" class="min-h-screen flex items-center justify-center">
 
-            <!-- User Info & Logout Button -->
-            <div class="flex items-center space-x-4">
-                <div class="text-right hidden sm:block">
-                    <p id="headerUserName" class="text-sm font-semibold text-slate-100 leading-snug">Carregando...</p>
-                    <p id="headerUserRole" class="text-xs text-indigo-300 leading-none">Cargo</p>
-                </div>
-                <div class="h-8 w-px bg-slate-700 hidden sm:block"></div>
-                <button onclick="handleLogout()" class="bg-slate-800 hover:bg-rose-600 text-slate-300 hover:text-white px-3 py-2 rounded-lg text-sm font-medium transition flex items-center shadow-sm">
-                    <i class="fa-solid fa-right-from-bracket mr-1.5"></i> Sair
-                </button>
-            </div>
+    <form id="loginForm"
+          class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+
+        <h1 class="text-2xl font-bold text-center mb-6">
+            Gestão Almoxarifado
+        </h1>
+
+        <input id="username"
+               name="username"
+               type="email"
+               placeholder="E-mail"
+               required
+               class="w-full border p-3 rounded-lg mb-4">
+
+        <input id="password"
+               name="password"
+               type="password"
+               placeholder="Senha"
+               required
+               class="w-full border p-3 rounded-lg mb-4">
+
+        <div id="loginAlert"
+             class="hidden bg-red-100 text-red-600 p-3 rounded mb-4">
+            <span id="loginAlertMsg"></span>
         </div>
-    </header>
 
-    <!-- Main Container Body -->
-    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+        <button class="w-full bg-blue-600 text-white p-3 rounded-lg">
+            Entrar
+        </button>
 
-        <!-- SCREEN 1: LOGIN TELA -->
-        <section id="screenLogin" class="fade-in min-h-[80vh] flex items-center justify-center py-8">
-            <div class="w-full max-w-md bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden">
-                <!-- Header Card -->
-                <div class="bg-gradient-to-r from-slate-900 to-indigo-950 p-8 text-center text-white relative">
-                    <div class="w-16 h-16 bg-indigo-600 text-white rounded-2xl mx-auto flex items-center justify-center text-3xl shadow-lg mb-3">
-                        <i class="fa-solid fa-boxes-packing"></i>
-                    </div>
-                    <h2 class="text-2xl font-bold">Gestão de Almoxarifado</h2>
-                    <p class="text-slate-300 text-sm mt-1">Indústria de Embalagens</p>
+    </form>
+</section>
+
+
+<!-- SISTEMA -->
+<section id="navSection" class="hidden">
+
+    <!-- MENU -->
+    <nav class="bg-white shadow p-4 flex gap-3">
+
+        <button onclick="showSection('dashboard')"
+                class="px-4 py-2 bg-blue-600 text-white rounded">
+            Dashboard
+        </button>
+
+        <button onclick="showSection('products')"
+                class="px-4 py-2 bg-blue-600 text-white rounded">
+            Produtos
+        </button>
+
+        <button onclick="showSection('movements')"
+                class="px-4 py-2 bg-blue-600 text-white rounded">
+            Movimentações
+        </button>
+
+        <button onclick="logout()"
+                class="px-4 py-2 bg-red-500 text-white rounded">
+            Sair
+        </button>
+
+    </nav>
+
+
+    <main class="max-w-6xl mx-auto p-6">
+
+
+        <!-- DASHBOARD -->
+        <section id="dashboard">
+
+            <h2 class="text-2xl font-bold mb-6">
+                Dashboard
+            </h2>
+
+            <div class="grid md:grid-cols-4 gap-4 mb-8">
+
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <p>Produtos</p>
+                    <strong id="DashProdutos" class="text-3xl">0</strong>
                 </div>
 
-                <!-- Form Login -->
-                <div class="p-8">
-                    <!-- Error Alert -->
-                    <div id="loginAlert" class="hidden mb-5 bg-rose-50 border-l-4 border-rose-500 p-4 rounded-r-md">
-                        <div class="flex items-start">
-                            <i class="fa-solid fa-triangle-exclamation text-rose-500 mt-0.5 mr-3"></i>
-                            <div>
-                                <h4 class="text-sm font-bold text-rose-800">Falha na Autenticação</h4>
-                                <p id="loginAlertMsg" class="text-xs text-rose-700 mt-0.5">E-mail ou senha incorretos. Verifique suas credenciais.</p>
-                                <button onclick="resetLoginForm()" class="mt-2 text-xs font-bold text-rose-800 underline hover:text-rose-950">Tentar Novamente</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
-                        <div>
-                            <label for="loginEmail" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">E-mail Corporativo</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                                    <i class="fa-solid fa-envelope"></i>
-                                </span>
-                                <input type="email" id="loginEmail" required placeholder="seu.email@embalagens.com"
-                                    class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                            </div>
-                        </div>
-
-                        <div>
-                            <label for="loginSenha" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1">Senha de Acesso</label>
-                            <div class="relative">
-                                <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                                    <i class="fa-solid fa-lock"></i>
-                                </span>
-                                <input type="password" id="loginSenha" required placeholder="••••••••"
-                                    class="w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition">
-                            </div>
-                        </div>
-
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 rounded-lg shadow-md hover:shadow-indigo-200 transition duration-150 flex items-center justify-center">
-                            <i class="fa-solid fa-right-to-bracket mr-2"></i> Entrar no Sistema
-                        </button>
-                    </form>
-
-                    <!-- Fast Quick Access Test Users -->
-                    <div class="mt-8 pt-6 border-t border-slate-200">
-                        <p class="text-xs font-semibold text-slate-500 text-center uppercase tracking-wider mb-3">Acesso Rápido para Avaliação (Dupla/Professor)</p>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="fillQuickUser('carlos@embalagens.com', '123456')" class="p-2 border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg text-center transition group">
-                                <span class="block text-xs font-bold text-slate-700 group-hover:text-indigo-600">Carlos S.</span>
-                                <span class="block text-[10px] text-slate-500">Almoxarife</span>
-                            </button>
-                            <button onclick="fillQuickUser('mariana@embalagens.com', '123456')" class="p-2 border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg text-center transition group">
-                                <span class="block text-xs font-bold text-slate-700 group-hover:text-indigo-600">Mariana S.</span>
-                                <span class="block text-[10px] text-slate-500">Gerente</span>
-                            </button>
-                            <button onclick="fillQuickUser('joao@embalagens.com', '123456')" class="p-2 border border-slate-200 bg-slate-50 hover:bg-indigo-50 hover:border-indigo-300 rounded-lg text-center transition group">
-                                <span class="block text-xs font-bold text-slate-700 group-hover:text-indigo-600">João P.</span>
-                                <span class="block text-[10px] text-slate-500">Operador</span>
-                            </button>
-                        </div>
-                    </div>
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <p>Estoque baixo</p>
+                    <strong id="DashEstoqueBaixo" class="text-3xl">0</strong>
                 </div>
+
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <p>Entradas</p>
+                    <strong id="DashEntradas" class="text-3xl">0</strong>
+                </div>
+
+                <div class="bg-white p-5 rounded-xl shadow">
+                    <p>Saídas</p>
+                    <strong id="DashSaidas" class="text-3xl">0</strong>
+                </div>
+
             </div>
+
+            <div class="bg-white rounded-xl shadow overflow-auto">
+
+                <table class="w-full">
+
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-3 text-left">Produto</th>
+                            <th class="p-3 text-left">Tipo</th>
+                            <th class="p-3 text-left">Quantidade</th>
+                            <th class="p-3 text-left">Usuário</th>
+                            <th class="p-3 text-left">Data</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="DashTableMovs"></tbody>
+
+                </table>
+
+            </div>
+
         </section>
 
-        <!-- SCREEN 2: DASHBOARD MAIN -->
-        <section id="screenDashboard" class="hidden fade-in space-y-6">
-            <!-- Welcome Banner -->
-            <div class="bg-gradient-to-r from-slate-900 via-indigo-900 to-slate-900 text-white rounded-2xl p-6 shadow-xl relative overflow-hidden">
-                <div class="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-                    <div>
-                        <span class="inline-block px-3 py-1 bg-indigo-500/30 border border-indigo-400/30 text-indigo-200 text-xs font-bold rounded-full mb-2">Painel de Controle</span>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">Bem-vindo(a), <span id="dashUserWelcome" class="text-indigo-300">Usuário</span>!</h1>
-                        <p class="text-slate-300 text-sm mt-1">Sistema informatizado para controle de entradas, saídas e estoque mínimo de embalagens.</p>
+
+        <!-- PRODUTOS -->
+        <section id="products" class="hidden">
+
+            <div class="flex justify-between mb-6">
+
+                <h2 class="text-2xl font-bold">
+                    Produtos
+                </h2>
+
+                <button onclick="showProductForm()"
+                        class="bg-blue-600 text-white px-4 py-2 rounded">
+                    + Produto
+                </button>
+
+            </div>
+
+
+            <!-- CADASTRO -->
+            <div id="productForm"
+                 class="hidden bg-white p-6 rounded-xl shadow mb-6">
+
+                <h3 class="text-xl font-bold mb-4">
+                    Novo Produto
+                </h3>
+
+                <form id="newProductForm">
+
+                    <div class="grid md:grid-cols-2 gap-4">
+
+                        <input id="productSku"
+                               placeholder="SKU"
+                               required
+                               class="border p-3 rounded">
+
+                        <input id="productName"
+                               placeholder="Nome"
+                               required
+                               class="border p-3 rounded">
+
+                        <select id="productCategory"
+                                required
+                                class="border p-3 rounded">
+                            <option value="">Categoria</option>
+                        </select>
+
+                        <input id="productWeight"
+                               type="number"
+                               step="0.001"
+                               min="0"
+                               placeholder="Peso (kg)"
+                               required
+                               class="border p-3 rounded">
+
+                        <input id="productInitialStock"
+                               type="number"
+                               min="0"
+                               value="0"
+                               placeholder="Estoque inicial"
+                               class="border p-3 rounded">
+
+                        <input id="productMinStock"
+                               type="number"
+                               min="0"
+                               value="10"
+                               placeholder="Estoque mínimo"
+                               class="border p-3 rounded">
+
                     </div>
-                    <div class="flex items-center gap-3">
-                        <button onclick="navigateTo('produtos')" class="bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-md transition flex items-center">
-                            <i class="fa-solid fa-plus-circle mr-2"></i> Novo Produto
+
+                    <textarea id="productSpecifications"
+                              placeholder="Especificações"
+                              class="border p-3 rounded w-full mt-4"></textarea>
+
+                    <div class="mt-4 flex gap-2">
+
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded">
+                            Salvar
                         </button>
-                        <button onclick="navigateTo('estoque')" class="bg-white/10 hover:bg-white/20 text-white px-4 py-2.5 rounded-xl font-semibold text-sm backdrop-blur transition flex items-center">
-                            <i class="fa-solid fa-arrow-right-arrow-left mr-2"></i> Lançar Movimento
-                        </button>
-                    </div>
-                </div>
-            </div>
 
-            <!-- KPI Cards Row -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Card Total Products -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total de Produtos</p>
-                        <h3 id="dashTotalProdutos" class="text-2xl font-black text-slate-800 mt-1">0</h3>
-                        <p class="text-xs text-slate-500 mt-1"><span class="text-emerald-600 font-semibold"><i class="fa-solid fa-tags"></i> Caixas & Frascos</span></p>
-                    </div>
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-boxes-stacked"></i>
-                    </div>
-                </div>
-
-                <!-- Card Stock Critical Alerts -->
-                <div id="dashAlertCardBg" class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between transition">
-                    <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Abaixo do Mínimo</p>
-                        <h3 id="dashTotalAlertas" class="text-2xl font-black text-rose-600 mt-1">0</h3>
-                        <p id="dashTotalAlertasSub" class="text-xs text-rose-500 font-semibold mt-1"><i class="fa-solid fa-triangle-exclamation"></i> Requer Atenção</p>
-                    </div>
-                    <div id="dashAlertIconBg" class="w-12 h-12 bg-rose-50 text-rose-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-bell"></i>
-                    </div>
-                </div>
-
-                <!-- Card Monthly Entries -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Entradas</p>
-                        <h3 id="dashTotalEntradas" class="text-2xl font-black text-emerald-600 mt-1">0</h3>
-                        <p class="text-xs text-slate-500 mt-1"><span class="text-emerald-600 font-semibold"><i class="fa-solid fa-arrow-down"></i> Recebimentos</span></p>
-                    </div>
-                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-boxes-packing"></i>
-                    </div>
-                </div>
-
-                <!-- Card Monthly Exits -->
-                <div class="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                    <div>
-                        <p class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total Saídas</p>
-                        <h3 id="dashTotalSaidas" class="text-2xl font-black text-amber-600 mt-1">0</h3>
-                        <p class="text-xs text-slate-500 mt-1"><span class="text-amber-600 font-semibold"><i class="fa-solid fa-arrow-up"></i> Linha de Produção</span></p>
-                    </div>
-                    <div class="w-12 h-12 bg-amber-50 text-amber-600 rounded-xl flex items-center justify-center text-xl font-bold">
-                        <i class="fa-solid fa-truck-ramp-box"></i>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation Shortcuts & Stock Summary Grid -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Navigation Shortcuts Column (2 cols width) -->
-                <div class="lg:col-span-2 space-y-6">
-                    <!-- Action Cards -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <!-- Card Cadastro -->
-                        <div onclick="navigateTo('produtos')" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-indigo-300 transition cursor-pointer group">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 bg-indigo-100 text-indigo-600 group-hover:bg-indigo-600 group-hover:text-white rounded-xl flex items-center justify-center text-xl transition">
-                                    <i class="fa-solid fa-box-archive"></i>
-                                </div>
-                                <span class="text-xs font-bold text-indigo-600 group-hover:translate-x-1 transition flex items-center">
-                                    Acessar <i class="fa-solid fa-chevron-right ml-1"></i>
-                                </span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-800">Cadastro de Produtos</h3>
-                            <p class="text-xs text-slate-500 mt-1">Cadastrar caixas de papelão (gramatura, dimensões), frascos plásticos (tampa, capacidade) e insumos.</p>
-                        </div>
-
-                        <!-- Card Gestao Estoque -->
-                        <div onclick="navigateTo('estoque')" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 hover:shadow-md hover:border-emerald-300 transition cursor-pointer group">
-                            <div class="flex items-center justify-between mb-4">
-                                <div class="w-12 h-12 bg-emerald-100 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white rounded-xl flex items-center justify-center text-xl transition">
-                                    <i class="fa-solid fa-arrow-right-arrow-left"></i>
-                                </div>
-                                <span class="text-xs font-bold text-emerald-600 group-hover:translate-x-1 transition flex items-center">
-                                    Acessar <i class="fa-solid fa-chevron-right ml-1"></i>
-                                </span>
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-800">Gestão de Estoque</h3>
-                            <p class="text-xs text-slate-500 mt-1">Realizar lançamentos de entrada e saída, monitorar estoque mínimo e rastrear o histórico completo.</p>
-                        </div>
-                    </div>
-
-                    <!-- Recent Activity Widget -->
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-base font-bold text-slate-800 flex items-center">
-                                <i class="fa-solid fa-clock-rotate-left mr-2 text-indigo-600"></i> Últimas Movimentações Registradas
-                            </h3>
-                            <button onclick="navigateTo('estoque')" class="text-xs font-bold text-indigo-600 hover:underline">Ver Histórico Completo</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead>
-                                    <tr class="text-slate-500 border-b border-slate-200">
-                                        <th class="pb-2 font-bold uppercase">Data/Hora</th>
-                                        <th class="pb-2 font-bold uppercase">Produto</th>
-                                        <th class="pb-2 font-bold uppercase">Tipo</th>
-                                        <th class="pb-2 font-bold uppercase text-right">Qtd</th>
-                                        <th class="pb-2 font-bold uppercase">Operador</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashTableRecentMovs" class="divide-y divide-slate-100">
-                                    <!-- Populated via JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Right Column: Critical Stock Items Widget -->
-                <div class="space-y-6">
-                    <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <h3 class="text-base font-bold text-slate-800 flex items-center">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-500 mr-2"></i> Itens Críticos em Estoque
-                            </h3>
-                            <span class="text-xs bg-rose-100 text-rose-700 px-2 py-0.5 rounded-full font-bold">Urgente</span>
-                        </div>
-                        <p class="text-xs text-slate-500 mb-4">Embalagens cujo saldo atual está estritamente abaixo da cota mínima configurada.</p>
-                        <div id="dashCriticalItemsList" class="space-y-3">
-                            <!-- Populated via JS -->
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- SCREEN 3: CADASTRO DE PRODUTOS -->
-        <section id="screenProdutos" class="hidden fade-in space-y-6">
-            <!-- Top Controls Bar -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">Cadastro de Produtos</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Gerenciamento de tipos de embalagens, especificações e níveis de reposição.</p>
-                </div>
-                <div class="flex items-center gap-3">
-                    <button onclick="navigateTo('dashboard')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition flex items-center">
-                        <i class="fa-solid fa-arrow-left mr-2"></i> Voltar ao Menu
-                    </button>
-                    <button onclick="openProductModal()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-semibold text-sm shadow-md transition flex items-center">
-                        <i class="fa-solid fa-plus mr-2"></i> Cadastrar Produto
-                    </button>
-                </div>
-            </div>
-
-            <!-- Search and Filter Bar -->
-            <div class="bg-white p-4 rounded-2xl shadow-sm border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div class="relative w-full sm:w-96">
-                    <span class="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-400">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </span>
-                    <input type="text" id="productSearchInput" oninput="renderProductsTable()" placeholder="Buscar por Nome do Produto ou SKU..."
-                        class="w-full pl-10 pr-4 py-2 border border-slate-300 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                </div>
-                <div class="flex items-center gap-2 w-full sm:w-auto justify-end">
-                    <label class="text-xs font-bold text-slate-500">Filtrar Categoria:</label>
-                    <select id="productFilterCat" onchange="renderProductsTable()" class="border border-slate-300 rounded-xl p-2 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="TODAS">Todas as Categorias</option>
-                        <option value="Caixas de Papelão">Caixas de Papelão</option>
-                        <option value="Frascos Plásticos">Frascos Plásticos</option>
-                        <option value="Insumos de Lacre">Insumos de Lacre</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Products Table Card -->
-            <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
-                <div class="overflow-x-auto">
-                    <table class="w-full text-left border-collapse">
-                        <thead>
-                            <tr class="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider border-b border-slate-200">
-                                <th class="p-4 font-bold">Código SKU</th>
-                                <th class="p-4 font-bold">Nome da Embalagem</th>
-                                <th class="p-4 font-bold">Categoria</th>
-                                <th class="p-4 font-bold">Especificações Técnicas</th>
-                                <th class="p-4 font-bold">Peso Unit.</th>
-                                <th class="p-4 font-bold text-center">Estoque Atual</th>
-                                <th class="p-4 font-bold text-center">Estoque Mín.</th>
-                                <th class="p-4 font-bold text-center">Status</th>
-                                <th class="p-4 font-bold text-center">Ações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productsTableBody" class="divide-y divide-slate-100 text-sm">
-                            <!-- Populated via JS -->
-                        </tbody>
-                    </table>
-                </div>
-                <!-- Empty State -->
-                <div id="productsEmptyState" class="hidden p-12 text-center">
-                    <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-2"></i>
-                    <p class="text-slate-600 font-semibold">Nenhum produto localizado</p>
-                    <p class="text-xs text-slate-400 mt-1">Tente ajustar os termos de busca ou cadastrar um novo item.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- MODAL CADASTRO / EDIÇÃO DE PRODUTO -->
-        <div id="productModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-            <div class="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden fade-in">
-                <!-- Modal Header -->
-                <div class="bg-slate-900 text-white p-6 flex justify-between items-center">
-                    <div>
-                        <h3 id="productModalTitle" class="text-xl font-bold">Cadastrar Nova Embalagem</h3>
-                        <p class="text-xs text-slate-400 mt-0.5">Preencha todos os campos técnicos para o controle do almoxarifado.</p>
-                    </div>
-                    <button onclick="closeProductModal()" class="text-slate-400 hover:text-white text-lg w-8 h-8 rounded-full hover:bg-slate-800 flex items-center justify-center">
-                        <i class="fa-solid fa-xmark"></i>
-                    </button>
-                </div>
-
-                <!-- Modal Body Form -->
-                <form id="productForm" onsubmit="saveProduct(event)" class="p-6 space-y-4">
-                    <input type="hidden" id="prodModalId">
-
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Código SKU *</label>
-                            <input type="text" id="prodModalSku" required placeholder="Ex: PAP-300-01"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500 uppercase">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Categoria *</label>
-                            <select id="prodModalCat" required onchange="handleCatChange()" class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
-                                <option value="">Selecione...</option>
-                                <option value="Caixas de Papelão">Caixas de Papelão</option>
-                                <option value="Frascos Plásticos">Frascos Plásticos</option>
-                                <option value="Insumos de Lacre">Insumos de Lacre</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Nome do Produto *</label>
-                        <input type="text" id="prodModalNome" required placeholder="Ex: Caixa Papelão Reforçada 30x20x15cm"
-                            class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
-                    </div>
-
-                    <!-- Dynamic Packaging Specifications Field -->
-                    <div>
-                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Especificações Técnicas de Embalagem *</label>
-                        <input type="text" id="prodModalSpecs" required placeholder="Ex: Gramatura 400g/m², Tampa Rosca Lacrada, etc."
-                            class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
-                        <p id="specsHint" class="text-[11px] text-slate-500 mt-1">Especifique dimensões, gramatura para papelão ou capacidade/tampa para frascos.</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Peso Unitário (kg) *</label>
-                            <input type="number" step="0.001" min="0.001" id="prodModalPeso" required placeholder="0.350"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estoque Inicial *</label>
-                            <input type="number" min="0" id="prodModalEstoque" required placeholder="100"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Estoque Mínimo *</label>
-                            <input type="number" min="1" id="prodModalMinimo" required placeholder="20"
-                                class="w-full p-2.5 border border-slate-300 rounded-lg text-sm focus:ring-2 focus:ring-indigo-500">
-                        </div>
-                    </div>
-
-                    <!-- Form Validation Alert Inside Modal -->
-                    <div id="productModalError" class="hidden p-3 bg-rose-50 border border-rose-300 text-rose-700 text-xs rounded-lg flex items-center">
-                        <i class="fa-solid fa-circle-exclamation mr-2"></i> <span id="productModalErrorMsg">Preencha todos os campos obrigatórios.</span>
-                    </div>
-
-                    <!-- Buttons Row -->
-                    <div class="pt-4 border-t border-slate-200 flex justify-end gap-3">
-                        <button type="button" onclick="closeProductModal()" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg font-semibold text-sm transition">
+                        <button type="button"
+                                onclick="hideProductForm()"
+                                class="bg-gray-300 px-4 py-2 rounded">
                             Cancelar
                         </button>
-                        <button type="submit" class="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-semibold text-sm shadow-md transition flex items-center">
-                            <i class="fa-solid fa-floppy-disk mr-2"></i> Salvar Produto
-                        </button>
+
                     </div>
+
                 </form>
-            </div>
-        </div>
 
-        <!-- SCREEN 4: GESTÃO DE ESTOQUE E ALERTAS -->
-        <section id="screenEstoque" class="hidden fade-in space-y-6">
-            <!-- Header Bar -->
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">Gestão de Estoque & Movimentações</h2>
-                    <p class="text-xs text-slate-500 mt-0.5">Lançamento de entradas, saídas para produção e alertas automáticos de nível crítico.</p>
-                </div>
-                <button onclick="navigateTo('dashboard')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition flex items-center self-start md:self-auto">
-                    <i class="fa-solid fa-arrow-left mr-2"></i> Voltar ao Menu
-                </button>
             </div>
 
-            <!-- PROMINENT MINIMUM STOCK ALERT BANNER -->
-            <div id="stockAlertBanner" class="bg-gradient-to-r from-rose-900 to-amber-900 text-white p-6 rounded-2xl shadow-lg border-l-8 border-rose-500 space-y-3">
-                <div class="flex items-center justify-between">
-                    <div class="flex items-center space-x-3">
-                        <div class="w-10 h-10 bg-rose-500/30 rounded-xl flex items-center justify-center text-rose-300 text-xl">
-                            <i class="fa-solid fa-triangle-exclamation"></i>
-                        </div>
-                        <div>
-                            <h3 class="text-lg font-bold">Mecanismo Automático de Estoque Mínimo</h3>
-                            <p class="text-xs text-rose-200">Alertas disparados para embalagens com saldo inferior ao limite configurado.</p>
-                        </div>
+
+            <!-- BUSCA -->
+            <input id="productSearch"
+                   placeholder="Pesquisar produto ou SKU..."
+                   class="w-full border p-3 rounded-lg mb-4">
+
+
+            <!-- TABELA -->
+            <div class="bg-white rounded-xl shadow overflow-auto">
+
+                <table class="w-full">
+
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-3 text-left">SKU</th>
+                            <th class="p-3 text-left">Produto</th>
+                            <th class="p-3 text-left">Categoria</th>
+                            <th class="p-3 text-left">Estoque</th>
+                            <th class="p-3 text-left">Mínimo</th>
+                            <th class="p-3">Ações</th>
+                        </tr>
+                    </thead>
+
+                    <tbody id="productsTable"></tbody>
+
+                </table>
+
+            </div>
+
+
+            <!-- EDIÇÃO -->
+            <div id="editProductSection"
+                 class="hidden bg-white p-6 rounded-xl shadow mt-6">
+
+                <h3 class="text-xl font-bold mb-4">
+                    Editar Produto
+                </h3>
+
+                <form id="editProductForm">
+
+                    <input type="hidden" id="editProductId">
+
+                    <div class="grid md:grid-cols-2 gap-4">
+
+                        <input id="editProductSku"
+                               placeholder="SKU"
+                               required
+                               class="border p-3 rounded">
+
+                        <input id="editProductName"
+                               placeholder="Nome"
+                               required
+                               class="border p-3 rounded">
+
+                        <select id="editProductCategory"
+                                required
+                                class="border p-3 rounded">
+                        </select>
+
+                        <input id="editProductWeight"
+                               type="number"
+                               step="0.001"
+                               class="border p-3 rounded">
+
+                        <input id="editProductCurrentStock"
+                               readonly
+                               class="border p-3 rounded bg-gray-100">
+
+                        <input id="editProductMinStock"
+                               type="number"
+                               min="0"
+                               class="border p-3 rounded">
+
                     </div>
-                    <span id="stockAlertCountBadge" class="bg-rose-500 text-white px-3 py-1 rounded-full text-xs font-black">0 Itens Críticos</span>
-                </div>
-                <div id="stockAlertBannerItems" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3 pt-2">
-                    <!-- Populated via JS -->
-                </div>
-            </div>
 
-            <!-- Grid Layout for Movement Form and Recent History -->
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <!-- Movement Registration Form Card (1 Col) -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-4">
-                    <div class="flex items-center space-x-3 pb-3 border-b border-slate-100">
-                        <div class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center font-bold">
-                            <i class="fa-solid fa-right-left"></i>
-                        </div>
-                        <h3 class="font-bold text-slate-800">Registrar Movimentação</h3>
-                    </div>
+                    <textarea id="editProductSpecifications"
+                              class="border p-3 rounded w-full mt-4"></textarea>
 
-                    <form id="movementForm" onsubmit="handleMovementSubmit(event)" class="space-y-4">
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Selecionar Embalagem *</label>
-                            <select id="movSelectProduto" required onchange="updateMovProductDetails()" class="w-full p-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500">
-                                <option value="">Carregando produtos...</option>
-                            </select>
-                            <p id="movStockCurrentInfo" class="text-xs text-slate-500 mt-1 font-medium"></p>
-                        </div>
+                    <div class="mt-4">
 
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Tipo de Operação *</label>
-                            <div class="grid grid-cols-2 gap-2">
-                                <label class="flex items-center justify-center p-2.5 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 has-[:checked]:bg-emerald-50 has-[:checked]:border-emerald-500 has-[:checked]:text-emerald-700 transition">
-                                    <input type="radio" name="movTipo" value="ENTRADA" checked class="hidden" onchange="toggleMovTypeStyle()">
-                                    <i class="fa-solid fa-arrow-down mr-1.5 text-emerald-600"></i>
-                                    <span class="text-xs font-bold">ENTRADA (+)</span>
-                                </label>
-                                <label class="flex items-center justify-center p-2.5 border border-slate-300 rounded-xl cursor-pointer hover:bg-slate-50 has-[:checked]:bg-rose-50 has-[:checked]:border-rose-500 has-[:checked]:text-rose-700 transition">
-                                    <input type="radio" name="movTipo" value="SAIDA" class="hidden" onchange="toggleMovTypeStyle()">
-                                    <i class="fa-solid fa-arrow-up mr-1.5 text-rose-600"></i>
-                                    <span class="text-xs font-bold">SAÍDA (-)</span>
-                                </label>
-                            </div>
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Quantidade *</label>
-                            <input type="number" min="1" id="movQuantidade" required placeholder="Ex: 50"
-                                class="w-full p-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <div>
-                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Observação / Nota Fiscal / Ordem de Produção</label>
-                            <input type="text" id="movObservacao" placeholder="Ex: NF #10492 ou Baixa p/ envase"
-                                class="w-full p-2.5 border border-slate-300 rounded-xl text-sm focus:ring-2 focus:ring-indigo-500">
-                        </div>
-
-                        <div class="bg-slate-50 p-3 rounded-xl border border-slate-200 text-xs space-y-1">
-                            <p class="text-slate-500"><strong>Responsável:</strong> <span id="movActiveUserLabel">Usuário Logado</span></p>
-                            <p class="text-slate-500"><strong>Data/Hora:</strong> <span id="movTimestampLabel">Horário Atual</span></p>
-                        </div>
-
-                        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-xl shadow-md transition flex items-center justify-center">
-                            <i class="fa-solid fa-check mr-2"></i> Confirmar Lançamento
+                        <button class="bg-blue-600 text-white px-4 py-2 rounded">
+                            Salvar
                         </button>
-                    </form>
-                </div>
 
-                <!-- Movement History Log Table (2 Cols) -->
-                <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex flex-col justify-between space-y-4">
-                    <div>
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-3 border-b border-slate-100 gap-2">
-                            <h3 class="font-bold text-slate-800 flex items-center">
-                                <i class="fa-solid fa-list-check mr-2 text-indigo-600"></i> Histórico Rastreável de Movimentações
-                            </h3>
-                            <span class="text-xs text-slate-500">Registros imutáveis de auditoria</span>
-                        </div>
+                        <button type="button"
+                                onclick="hideEditProductForm()"
+                                class="bg-gray-300 px-4 py-2 rounded">
+                            Cancelar
+                        </button>
 
-                        <!-- Movement Filter -->
-                        <div class="mt-4 mb-2 flex items-center gap-2">
-                            <input type="text" id="movHistorySearch" oninput="renderMovementHistoryTable()" placeholder="Filtrar por SKU, produto ou operador..."
-                                class="w-full p-2 border border-slate-300 rounded-lg text-xs">
-                        </div>
-
-                        <div class="overflow-x-auto max-h-[500px]">
-                            <table class="w-full text-left border-collapse text-xs">
-                                <thead class="sticky top-0 bg-slate-100 text-slate-600">
-                                    <tr class="border-b border-slate-200 uppercase">
-                                        <th class="p-3 font-bold">Data/Hora</th>
-                                        <th class="p-3 font-bold">SKU</th>
-                                        <th class="p-3 font-bold">Produto</th>
-                                        <th class="p-3 font-bold text-center">Tipo</th>
-                                        <th class="p-3 font-bold text-right">Qtd</th>
-                                        <th class="p-3 font-bold">Responsável</th>
-                                        <th class="p-3 font-bold">Observação</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="movementHistoryBody" class="divide-y divide-slate-100">
-                                    <!-- Populated via JS -->
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
-                </div>
+
+                </form>
+
             </div>
+
         </section>
 
-        <!-- SCREEN 5: DOCUMENTAÇÃO / DER / REQUISITOS (BONUS DELIVERABLES VIEW) -->
-        <section id="screenDocs" class="hidden fade-in space-y-6">
-            <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">Documentação Técnica da Avaliação</h2>
-                    <p class="text-xs text-slate-500">Entrega de Requisitos Funcionais, Diagrama Entidade-Relacionamento e Script de Banco de Dados.</p>
+
+        <!-- MOVIMENTAÇÕES -->
+        <section id="movements" class="hidden">
+
+            <h2 class="text-2xl font-bold mb-6">
+                Movimentações
+            </h2>
+
+
+            <form id="movementForm"
+                  class="bg-white p-6 rounded-xl shadow mb-6">
+
+                <div class="grid md:grid-cols-2 gap-4">
+
+                    <select id="movementProduct"
+                            required
+                            class="border p-3 rounded">
+                        <option value="">Produto</option>
+                    </select>
+
+                    <select id="movementType"
+                            required
+                            class="border p-3 rounded">
+                        <option value="">Tipo</option>
+                        <option value="ENTRADA">Entrada</option>
+                        <option value="SAIDA">Saída</option>
+                    </select>
+
+                    <input id="movementQuantity"
+                           type="number"
+                           min="1"
+                           placeholder="Quantidade"
+                           required
+                           class="border p-3 rounded">
+
+                    <input id="movementObservation"
+                           placeholder="Observação"
+                           class="border p-3 rounded">
+
                 </div>
-                <button onclick="navigateTo('dashboard')" class="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition">
-                    <i class="fa-solid fa-arrow-left mr-2"></i> Voltar
+
+                <button class="bg-blue-600 text-white px-4 py-2 rounded mt-4">
+                    Registrar movimentação
                 </button>
+
+            </form>
+
+
+            <div class="bg-white rounded-xl shadow overflow-auto">
+
+                <table class="w-full">
+
+                    <thead class="bg-gray-100">
+
+                        <tr>
+                            <th class="p-3">Data</th>
+                            <th class="p-3">Produto</th>
+                            <th class="p-3">SKU</th>
+                            <th class="p-3">Tipo</th>
+                            <th class="p-3">Quantidade</th>
+                            <th class="p-3">Usuário</th>
+                            <th class="p-3">Observação</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="movementsTable"></tbody>
+
+                </table>
+
             </div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <!-- Requisitos Funcionais Box -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="text-lg font-bold text-indigo-900 border-b pb-2"><i class="fa-solid fa-list-check mr-2"></i> 1. Lista de Requisitos Funcionais</h3>
-                    <ul class="text-xs text-slate-700 space-y-2 list-disc pl-4">
-                        <li><strong>RF01 - Autenticação:</strong> Permite login seguro de almoxarifes/gerentes com tratamento de erro e redirecionamento.</li>
-                        <li><strong>RF02 - Painel Principal:</strong> Exibe nome do usuário, logout, indicadores de estoque e atalhos de navegação.</li>
-                        <li><strong>RF03 - Cadastro de Produtos:</strong> Permite inclusão, edição e exclusão de caixas de papelão e frascos plásticos.</li>
-                        <li><strong>RF04 - Busca Reativa:</strong> Filtra produtos por termo de pesquisa (SKU ou Nome) em tempo real.</li>
-                        <li><strong>RF05 - Validação de Dados:</strong> Bloqueia campos em branco, SKU duplicado ou quantidades negativas.</li>
-                        <li><strong>RF06 - Gestão de Estoque:</strong> Controla entradas/saídas e calcula o saldo remanescente dinamicamente.</li>
-                        <li><strong>RF07 - Alerta de Estoque Mínimo:</strong> Emite avisos visuais de níveis críticos em destaque na interface.</li>
-                        <li><strong>RF08 - Rastreabilidade:</strong> Grava data/hora, tipo de operação, quantidade e operador responsável.</li>
-                    </ul>
-                </div>
-
-                <!-- DER e Script SQL Box -->
-                <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-200 space-y-3">
-                    <h3 class="text-lg font-bold text-indigo-900 border-b pb-2"><i class="fa-solid fa-database mr-2"></i> 2. Modelagem & Script SQL (`almoxarifado_db`)</h3>
-                    <div class="bg-slate-900 text-emerald-400 p-4 rounded-xl text-[11px] font-mono overflow-x-auto max-h-64">
-                        <pre>CREATE DATABASE almoxarifado_db;
-USE almoxarifado_db;
-
-CREATE TABLE usuario (
-    id_usuario INT AUTO_INCREMENT PRIMARY KEY,
-    nome VARCHAR(100) NOT NULL,
-    email VARCHAR(100) UNIQUE NOT NULL,
-    senha VARCHAR(255) NOT NULL,
-    cargo VARCHAR(50) NOT NULL
-);
-
-CREATE TABLE produto (
-    id_produto INT AUTO_INCREMENT PRIMARY KEY,
-    codigo_sku VARCHAR(30) UNIQUE NOT NULL,
-    nome VARCHAR(100) NOT NULL,
-    categoria VARCHAR(50) NOT NULL,
-    especificacoes TEXT,
-    peso_kg DECIMAL(8,3) NOT NULL,
-    estoque_atual INT DEFAULT 0,
-    estoque_minimo INT DEFAULT 10
-);
-
-CREATE TABLE movimentacao_estoque (
-    id_movimentacao INT AUTO_INCREMENT PRIMARY KEY,
-    id_produto INT NOT NULL,
-    id_usuario INT NOT NULL,
-    tipo VARCHAR(10) CHECK (tipo IN ('ENTRADA', 'SAIDA')),
-    quantidade INT NOT NULL,
-    data_hora DATETIME DEFAULT CURRENT_TIMESTAMP,
-    observacao VARCHAR(200),
-    FOREIGN KEY (id_produto) REFERENCES produto(id_produto),
-    FOREIGN KEY (id_usuario) REFERENCES usuario(id_usuario)
-);</pre>
-                    </div>
-                </div>
-            </div>
         </section>
 
     </main>
 
-    <!-- Custom Toast Notification Box -->
-    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 space-y-2 pointer-events-none"></div>
+</section>
 
-    <!-- Confirm Dialog Modal -->
-    <div id="confirmModal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 text-center fade-in">
-            <div class="w-12 h-12 bg-rose-100 text-rose-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
-                <i class="fa-solid fa-circle-question"></i>
-            </div>
-            <h3 id="confirmModalTitle" class="text-lg font-bold text-slate-800">Confirmar Exclusão</h3>
-            <p id="confirmModalMsg" class="text-xs text-slate-500 mt-1 mb-6">Esta ação é irreversível.</p>
-            <div class="flex justify-center gap-3">
-                <button onclick="closeConfirmModal(false)" class="px-4 py-2 bg-slate-200 hover:bg-slate-300 text-slate-700 rounded-lg text-xs font-bold transition">Cancelar</button>
-                <button id="confirmModalOkBtn" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-lg text-xs font-bold transition">Confirmar Exclusão</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- JavaScript Logic Section -->
-    <script>
-        // Default Seed Data required by specification
-        const SEED_USERS = [
-            { id: 1, nome: "Carlos Silva", email: "carlos@embalagens.com", senha: "123456", cargo: "Almoxarife" },
-            { id: 2, nome: "Mariana Souza", email: "mariana@embalagens.com", senha: "123456", cargo: "Gerente de Produção" },
-            { id: 3, nome: "João Pedro", email: "joao@embalagens.com", senha: "123456", cargo: "Operador de Estoque" }
-        ];
-
-        const SEED_PRODUCTS = [
-            { id: 101, codigo_sku: "PAP-300-01", nome: "Caixa Papelão Reforçada 30x20x15cm", categoria: "Caixas de Papelão", especificacoes: "Gramatura: 400g/m², Papelão Duplo Ondulado", peso_kg: 0.350, estoque_atual: 150, estoque_minimo: 50 },
-            { id: 102, codigo_sku: "FRA-500-02", nome: "Frasco Plástico PET 500ml", categoria: "Frascos Plásticos", especificacoes: "Capacidade: 500ml, Tampa Rosca Lacrada HDPE", peso_kg: 0.045, estoque_atual: 12, estoque_minimo: 100 }, // Critical Alert!
-            { id: 103, codigo_sku: "PAP-100-03", nome: "Caixa Papelão Padrão 15x15x10cm", categoria: "Caixas de Papelão", especificacoes: "Gramatura: 250g/m², Papelão Simples", peso_kg: 0.120, estoque_atual: 800, estoque_minimo: 200 },
-            { id: 104, codigo_sku: "FRA-1000-04", nome: "Frasco Plástico PEAD 1 Litro", categoria: "Frascos Plásticos", especificacoes: "Capacidade: 1000ml, Tampa Graduada Flip-Top", peso_kg: 0.085, estoque_atual: 45, estoque_minimo: 80 }, // Critical Alert!
-            { id: 105, codigo_sku: "LAC-050-05", nome: "Fita Adesiva Transparente 50mmx100m", categoria: "Insumos de Lacre", especificacoes: "Largura: 50mm, Adesivo Hot-Melt Alta Fixação", peso_kg: 0.220, estoque_atual: 300, estoque_minimo: 50 }
-        ];
-
-        const SEED_MOVEMENTS = [
-            { id: 501, id_produto: 101, codigo_sku: "PAP-300-01", produto_nome: "Caixa Papelão Reforçada 30x20x15cm", tipo: "ENTRADA", quantidade: 200, usuario_nome: "Carlos Silva", data_hora: "2026-09-10T09:30:00", observacao: "Recebimento Lote #4501 - NF 10928" },
-            { id: 502, id_produto: 102, codigo_sku: "FRA-500-02", produto_nome: "Frasco Plástico PET 500ml", tipo: "SAIDA", quantidade: 88, usuario_nome: "João Pedro", data_hora: "2026-09-11T14:15:00", observacao: "Baixa p/ linha de envase #02" },
-            { id: 503, id_produto: 103, codigo_sku: "PAP-100-03", produto_nome: "Caixa Papelão Padrão 15x15x10cm", tipo: "ENTRADA", quantidade: 500, usuario_nome: "Carlos Silva", data_hora: "2026-09-12T11:00:00", observacao: "Reposição quinzenal estoque A" },
-            { id: 504, id_produto: 104, codigo_sku: "FRA-1000-04", produto_nome: "Frasco Plástico PEAD 1 Litro", tipo: "SAIDA", quantidade: 35, usuario_nome: "Mariana Souza", data_hora: "2026-09-13T16:45:00", observacao: "Atendimento OS #3829 - Envasamento" }
-        ];
-
-        // Global State Holders
-        let currentUser = null;
-        let productsList = [];
-        let movementsList = [];
-        let confirmResolver = null;
-
-        // Initialize App State on Page Load
-        window.addEventListener('load', () => {
-            initStorageData();
-            checkSession();
-        });
-
-        function initStorageData() {
-            if (!localStorage.getItem('almox_users')) {
-                localStorage.setItem('almox_users', JSON.stringify(SEED_USERS));
-            }
-            if (!localStorage.getItem('almox_produtos')) {
-                localStorage.setItem('almox_produtos', JSON.stringify(SEED_PRODUCTS));
-            }
-            if (!localStorage.getItem('almox_movimentacoes')) {
-                localStorage.setItem('almox_movimentacoes', JSON.stringify(SEED_MOVEMENTS));
-            }
-
-            productsList = JSON.parse(localStorage.getItem('almox_produtos')) || [];
-            movementsList = JSON.parse(localStorage.getItem('almox_movimentacoes')) || [];
-        }
-
-        function checkSession() {
-            const savedUser = localStorage.getItem('almox_currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                setupHeaderUser();
-                navigateTo('dashboard');
-            } else {
-                navigateTo('login');
-            }
-        }
-
-        function fillQuickUser(email, senha) {
-            document.getElementById('loginEmail').value = email;
-            document.getElementById('loginSenha').value = senha;
-            document.getElementById('loginAlert').classList.add('hidden');
-        }
-
-        function resetLoginForm() {
-            document.getElementById('loginForm').reset();
-            document.getElementById('loginAlert').classList.add('hidden');
-        }
-
-        function handleLogin(event) {
-            event.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
-            const senha = document.getElementById('loginSenha').value.trim();
-
-            const users = JSON.parse(localStorage.getItem('almox_users')) || SEED_USERS;
-            const foundUser = users.find(u => u.email.toLowerCase() === email && u.senha === senha);
-
-            if (foundUser) {
-                currentUser = foundUser;
-                localStorage.setItem('almox_currentUser', JSON.stringify(currentUser));
-                setupHeaderUser();
-                document.getElementById('loginAlert').classList.add('hidden');
-                showToast(`Bem-vindo, ${currentUser.nome}!`, 'success');
-                navigateTo('dashboard');
-            } else {
-                document.getElementById('loginAlertMsg').innerText = "E-mail ou senha incorretos. Tente novamente.";
-                document.getElementById('loginAlert').classList.remove('hidden');
-            }
-        }
-
-        function handleLogout() {
-            currentUser = null;
-            localStorage.removeItem('almox_currentUser');
-            document.getElementById('appHeader').classList.add('hidden');
-            showToast('Sessão encerrada com sucesso.', 'info');
-            navigateTo('login');
-        }
-
-        function setupHeaderUser() {
-            if (!currentUser) return;
-            document.getElementById('headerUserName').innerText = currentUser.nome;
-            document.getElementById('headerUserRole').innerText = currentUser.cargo;
-            document.getElementById('appHeader').classList.remove('hidden');
-            document.getElementById('dashUserWelcome').innerText = currentUser.nome;
-        }
-
-        function navigateTo(screenId) {
-            const screens = ['login', 'dashboard', 'produtos', 'estoque', 'docs'];
-            screens.forEach(s => {
-                const el = document.getElementById(`screen${capitalize(s)}`);
-                if (el) el.classList.add('hidden');
-            });
-
-            const targetScreen = document.getElementById(`screen${capitalize(screenId)}`);
-            if (targetScreen) targetScreen.classList.remove('hidden');
-
-            // Update Navigation Button States
-            const navBtns = {
-                dashboard: 'navBtnDashboard',
-                produtos: 'navBtnProdutos',
-                estoque: 'navBtnEstoque',
-                docs: 'navBtnDocs'
-            };
-
-            Object.keys(navBtns).forEach(k => {
-                const btn = document.getElementById(navBtns[k]);
-                if (btn) {
-                    if (k === screenId) {
-                        btn.className = "px-3 py-2 rounded-md text-sm font-medium transition text-indigo-400 bg-slate-800";
-                    } else {
-                        btn.className = "px-3 py-2 rounded-md text-sm font-medium transition text-slate-300 hover:bg-slate-800 hover:text-white";
-                    }
-                }
-            });
-
-            // Trigger Specific Screen Renderers
-            if (screenId === 'dashboard') renderDashboard();
-            if (screenId === 'produtos') renderProductsTable();
-            if (screenId === 'estoque') renderStockManagementView();
-
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function capitalize(str) {
-            return str.charAt(0).toUpperCase() + str.slice(1);
-        }
-
-        function renderProductsTable() {
-            const query = document.getElementById('productSearchInput').value.trim().toLowerCase();
-            const catFilter = document.getElementById('productFilterCat').value;
-            const tbody = document.getElementById('productsTableBody');
-            const emptyState = document.getElementById('productsEmptyState');
-
-            tbody.innerHTML = '';
-
-            const filtered = productsList.filter(p => {
-                const matchesText = p.nome.toLowerCase().includes(query) || p.codigo_sku.toLowerCase().includes(query);
-                const matchesCat = (catFilter === 'TODAS') || (p.categoria === catFilter);
-                return matchesText && matchesCat;
-            });
-
-            if (filtered.length === 0) {
-                emptyState.classList.remove('hidden');
-                return;
-            } else {
-                emptyState.classList.add('hidden');
-            }
-
-            filtered.forEach(p => {
-                const isCritical = p.estoque_atual < p.estoque_minimo;
-                const tr = document.createElement('tr');
-                tr.className = `border-b border-slate-100 hover:bg-slate-50/80 transition ${isCritical ? 'bg-rose-50/40' : ''}`;
-
-                tr.innerHTML = `
-                    <td class="p-4 font-bold font-mono text-xs text-indigo-900">${p.codigo_sku}</td>
-                    <td class="p-4 font-semibold text-slate-800">${p.nome}</td>
-                    <td class="p-4"><span class="px-2 py-1 bg-slate-100 text-slate-700 text-xs rounded-md font-medium">${p.categoria}</span></td>
-                    <td class="p-4 text-xs text-slate-600 max-w-xs truncate" title="${p.especificacoes}">${p.especificacoes}</td>
-                    <td class="p-4 text-xs font-medium text-slate-600">${Number(p.peso_kg).toFixed(3)} kg</td>
-                    <td class="p-4 text-center font-bold text-sm ${isCritical ? 'text-rose-600' : 'text-slate-800'}">${p.estoque_atual}</td>
-                    <td class="p-4 text-center text-xs text-slate-500 font-medium">${p.estoque_minimo}</td>
-                    <td class="p-4 text-center">
-                        ${isCritical ? 
-                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-700"><i class="fa-solid fa-triangle-exclamation mr-1"></i> Crítico</span>' : 
-                            '<span class="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-bold bg-emerald-100 text-emerald-700"><i class="fa-solid fa-check mr-1"></i> Normal</span>'
-                        }
-                    </td>
-                    <td class="p-4 text-center space-x-1">
-                        <button onclick="openProductModal(${p.id})" class="p-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 rounded-md transition" title="Editar">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button onclick="confirmDeleteProduct(${p.id})" class="p-1.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-md transition" title="Excluir">
-                            <i class="fa-solid fa-trash-can"></i>
-                        </button>
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function handleCatChange() {
-            const cat = document.getElementById('prodModalCat').value;
-            const hint = document.getElementById('specsHint');
-            if (cat === 'Caixas de Papelão') {
-                hint.innerText = 'Exemplo de Especificação: Gramatura 350g/m², Papelão Duplo Ondulado, 30x20x15cm';
-            } else if (cat === 'Frascos Plásticos') {
-                hint.innerText = 'Exemplo de Especificação: Capacidade 500ml, Rosca Lacrada HDPE, Transparente';
-            } else {
-                hint.innerText = 'Exemplo de Especificação: Largura 50mm, Fita Hot-Melt de Alta Aderência';
-            }
-        }
-
-        function openProductModal(productId = null) {
-            const modal = document.getElementById('productModal');
-            const form = document.getElementById('productForm');
-            const errorBox = document.getElementById('productModalError');
-            errorBox.classList.add('hidden');
-            form.reset();
-
-            if (productId) {
-                const prod = productsList.find(p => p.id === productId);
-                if (prod) {
-                    document.getElementById('productModalTitle').innerText = "Editar Produto";
-                    document.getElementById('prodModalId').value = prod.id;
-                    document.getElementById('prodModalSku').value = prod.codigo_sku;
-                    document.getElementById('prodModalCat').value = prod.categoria;
-                    document.getElementById('prodModalNome').value = prod.nome;
-                    document.getElementById('prodModalSpecs').value = prod.especificacoes;
-                    document.getElementById('prodModalPeso').value = prod.peso_kg;
-                    document.getElementById('prodModalEstoque').value = prod.estoque_atual;
-                    document.getElementById('prodModalMinimo').value = prod.estoque_minimo;
-                }
-            } else {
-                document.getElementById('productModalTitle').innerText = "Cadastrar Nova Embalagem";
-                document.getElementById('prodModalId').value = "";
-            }
-
-            modal.classList.remove('hidden');
-        }
-
-        function closeProductModal() {
-            document.getElementById('productModal').classList.add('hidden');
-        }
-
-        function saveProduct(event) {
-            event.preventDefault();
-            const idVal = document.getElementById('prodModalId').value;
-            const sku = document.getElementById('prodModalSku').value.trim().toUpperCase();
-            const cat = document.getElementById('prodModalCat').value;
-            const nome = document.getElementById('prodModalNome').value.trim();
-            const specs = document.getElementById('prodModalSpecs').value.trim();
-            const peso = parseFloat(document.getElementById('prodModalPeso').value);
-            const estoque = parseInt(document.getElementById('prodModalEstoque').value);
-            const minimo = parseInt(document.getElementById('prodModalMinimo').value);
-
-            const errorBox = document.getElementById('productModalError');
-            const errorMsg = document.getElementById('productModalErrorMsg');
-
-            // Form Validations
-            if (!sku || !cat || !nome || !specs || isNaN(peso) || isNaN(estoque) || isNaN(minimo)) {
-                errorMsg.innerText = "Por favor, preencha todos os campos obrigatórios corretamente.";
-                errorBox.classList.remove('hidden');
-                return;
-            }
-
-            if (peso <= 0 || estoque < 0 || minimo <= 0) {
-                errorMsg.innerText = "O peso e o estoque mínimo devem ser maiores que zero.";
-                errorBox.classList.remove('hidden');
-                return;
-            }
-
-            // SKU Uniqueness Check
-            const existingSku = productsList.find(p => p.codigo_sku === sku && p.id != idVal);
-            if (existingSku) {
-                errorMsg.innerText = `O Código SKU "${sku}" já pertence a outro produto.`;
-                errorBox.classList.remove('hidden');
-                return;
-            }
-
-            if (idVal) {
-                // Edit existing product
-                const index = productsList.findIndex(p => p.id == idVal);
-                if (index !== -1) {
-                    productsList[index] = {
-                        ...productsList[index],
-                        codigo_sku: sku,
-                        categoria: cat,
-                        nome: nome,
-                        especificacoes: specs,
-                        peso_kg: peso,
-                        estoque_atual: estoque,
-                        estoque_minimo: minimo
-                    };
-                    showToast('Produto atualizado com sucesso!', 'success');
-                }
-            } else {
-                // Create new product
-                const newProduct = {
-                    id: Date.now(),
-                    codigo_sku: sku,
-                    categoria: cat,
-                    nome: nome,
-                    especificacoes: specs,
-                    peso_kg: peso,
-                    estoque_atual: estoque,
-                    estoque_minimo: minimo
-                };
-                productsList.push(newProduct);
-                showToast('Novo produto cadastrado!', 'success');
-            }
-
-            localStorage.setItem('almox_produtos', JSON.stringify(productsList));
-            closeProductModal();
-            renderProductsTable();
-        }
-
-        async function confirmDeleteProduct(id) {
-            const prod = productsList.find(p => p.id === id);
-            if (!prod) return;
-
-            const confirmed = await openConfirmModal(
-                'Excluir Embalagem',
-                `Tem certeza que deseja excluir "${prod.nome}" (${prod.codigo_sku})?`
-            );
-
-            if (confirmed) {
-                productsList = productsList.filter(p => p.id !== id);
-                localStorage.setItem('almox_produtos', JSON.stringify(productsList));
-                renderProductsTable();
-                showToast('Produto removido.', 'info');
-            }
-        }
-
-        function renderStockManagementView() {
-            renderStockAlertBanner();
-            populateMovementSelect();
-            renderMovementHistoryTable();
-
-            // Update user info & timestamp labels in form
-            document.getElementById('movActiveUserLabel').innerText = currentUser ? `${currentUser.nome} (${currentUser.cargo})` : 'Operador';
-            document.getElementById('movTimestampLabel').innerText = new Date().toLocaleString('pt-BR');
-        }
-
-        function renderStockAlertBanner() {
-            const criticalList = productsList.filter(p => p.estoque_atual < p.estoque_minimo);
-            const bannerItems = document.getElementById('stockAlertBannerItems');
-            const countBadge = document.getElementById('stockAlertCountBadge');
-
-            countBadge.innerText = `${criticalList.length} Item(ns) Crítico(s)`;
-
-            if (criticalList.length === 0) {
-                bannerItems.innerHTML = `
-                    <div class="col-span-full bg-emerald-950/40 p-3 rounded-xl border border-emerald-500/30 text-emerald-200 text-xs flex items-center">
-                        <i class="fa-solid fa-circle-check mr-2 text-emerald-400 text-base"></i>
-                        <span>Todos os níveis de estoque de embalagens estão acima dos limites mínimos configurados!</span>
-                    </div>
-                `;
-                return;
-            }
-
-            bannerItems.innerHTML = criticalList.map(p => `
-                <div class="bg-black/30 backdrop-blur p-3 rounded-xl border border-rose-500/40 flex items-center justify-between">
-                    <div>
-                        <p class="font-bold text-xs text-white">${p.nome}</p>
-                        <p class="text-[10px] text-rose-200 font-mono">${p.codigo_sku} • ${p.categoria}</p>
-                        <p class="text-[11px] text-rose-300 font-medium mt-1">Saldo: <strong class="text-white">${p.estoque_atual}</strong> (Mín: ${p.estoque_minimo})</p>
-                    </div>
-                    <button onclick="quickSelectMovement(${p.id})" class="px-2.5 py-1 bg-rose-500 hover:bg-rose-600 text-white text-[10px] font-bold rounded-lg transition shadow">
-                        Repor
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function populateMovementSelect() {
-            const select = document.getElementById('movSelectProduto');
-            select.innerHTML = '<option value="">Selecione o produto...</option>' + 
-                productsList.map(p => {
-                    const criticalMark = p.estoque_atual < p.estoque_minimo ? ' ⚠️ [MÍNIMO CRÍTICO]' : '';
-                    return `<option value="${p.id}">${p.codigo_sku} - ${p.nome} (Estoque: ${p.estoque_atual})${criticalMark}</option>`;
-                }).join('');
-        }
-
-        function updateMovProductDetails() {
-            const prodId = document.getElementById('movSelectProduto').value;
-            const info = document.getElementById('movStockCurrentInfo');
-            if (!prodId) {
-                info.innerText = '';
-                return;
-            }
-            const p = productsList.find(x => x.id == prodId);
-            if (p) {
-                info.innerHTML = `Saldo em estoque: <strong class="${p.estoque_atual < p.estoque_minimo ? 'text-rose-600' : 'text-emerald-600'}">${p.estoque_atual} unidades</strong> | Cota Mínima: ${p.estoque_minimo}`;
-            }
-        }
-
-        function toggleMovTypeStyle() {
-            // Radio button style update if needed
-        }
-
-        function quickSelectMovement(productId) {
-            const select = document.getElementById('movSelectProduto');
-            select.value = productId;
-            updateMovProductDetails();
-            document.querySelector('input[name="movTipo"][value="ENTRADA"]').checked = true;
-            document.getElementById('movQuantidade').focus();
-        }
-
-        function handleMovementSubmit(event) {
-            event.preventDefault();
-            const prodId = parseInt(document.getElementById('movSelectProduto').value);
-            const tipo = document.querySelector('input[name="movTipo"]:checked').value;
-            const qtd = parseInt(document.getElementById('movQuantidade').value);
-            const obs = document.getElementById('movObservacao').value.trim();
-
-            if (!prodId || isNaN(qtd) || qtd <= 0) {
-                showToast('Selecione um produto e uma quantidade válida.', 'error');
-                return;
-            }
-
-            const pIndex = productsList.findIndex(p => p.id === prodId);
-            if (pIndex === -1) return;
-
-            const product = productsList[pIndex];
-
-            // Validation: SAIDA cannot exceed current stock
-            if (tipo === 'SAIDA' && product.estoque_atual < qtd) {
-                showToast(`Estoque insuficiente! Saldo atual é de apenas ${product.estoque_atual} unidades.`, 'error');
-                return;
-            }
-
-            // Calculate new stock balance
-            const novoEstoque = tipo === 'ENTRADA' ? (product.estoque_atual + qtd) : (product.estoque_atual - qtd);
-            productsList[pIndex].estoque_atual = novoEstoque;
-
-            // Record immutable history log entry
-            const newMovement = {
-                id: Date.now(),
-                id_produto: product.id,
-                codigo_sku: product.codigo_sku,
-                produto_nome: product.nome,
-                tipo: tipo,
-                quantidade: qtd,
-                usuario_nome: currentUser ? currentUser.nome : 'Operador',
-                data_hora: new Date().toISOString(),
-                observacao: obs || (tipo === 'ENTRADA' ? 'Entrada manual de almoxarifado' : 'Saída para linha de produção')
-            };
-
-            movementsList.unshift(newMovement);
-
-            // Persist to LocalStorage
-            localStorage.setItem('almox_produtos', JSON.stringify(productsList));
-            localStorage.setItem('almox_movimentacoes', JSON.stringify(movementsList));
-
-            // Reset Form and Refresh Views
-            document.getElementById('movementForm').reset();
-            renderStockManagementView();
-
-            showToast(`Movimentação de ${tipo} registrada com sucesso!`, 'success');
-        }
-
-        function renderMovementHistoryTable() {
-            const search = document.getElementById('movHistorySearch').value.toLowerCase();
-            const tbody = document.getElementById('movementHistoryBody');
-            tbody.innerHTML = '';
-
-            const filtered = movementsList.filter(m => 
-                m.codigo_sku.toLowerCase().includes(search) ||
-                m.produto_nome.toLowerCase().includes(search) ||
-                m.usuario_nome.toLowerCase().includes(search)
-            );
-
-            if (filtered.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum registro de movimentação encontrado.</td></tr>';
-                return;
-            }
-
-            filtered.forEach(m => {
-                const tr = document.createElement('tr');
-                tr.className = 'border-b border-slate-100 hover:bg-slate-50 transition';
-                const dateFormatted = new Date(m.data_hora).toLocaleString('pt-BR');
-
-                tr.innerHTML = `
-                    <td class="p-3 text-slate-500 whitespace-nowrap">${dateFormatted}</td>
-                    <td class="p-3 font-mono font-bold text-slate-800">${m.codigo_sku}</td>
-                    <td class="p-3 font-medium text-slate-800">${m.produto_nome}</td>
-                    <td class="p-3 text-center">
-                        <span class="px-2 py-0.5 rounded-full font-bold text-[10px] ${m.tipo === 'ENTRADA' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">
-                            ${m.tipo}
-                        </span>
-                    </td>
-                    <td class="p-3 text-right font-bold text-slate-800">${m.quantidade}</td>
-                    <td class="p-3 text-slate-600">${m.usuario_nome}</td>
-                    <td class="p-3 text-slate-500 max-w-xs truncate">${m.observacao || '-'}</td>
-                `;
-                tbody.appendChild(tr);
-            });
-        }
-
-        function renderDashboard() {
-            if (!currentUser) return;
-
-            // Compute KPIs
-            const totalProdutos = productsList.length;
-            const criticalAlerts = productsList.filter(p => p.estoque_atual < p.estoque_minimo);
-            const totalEntradas = movementsList.filter(m => m.tipo === 'ENTRADA').reduce((acc, m) => acc + m.quantidade, 0);
-            const totalSaidas = movementsList.filter(m => m.tipo === 'SAIDA').reduce((acc, m) => acc + m.quantidade, 0);
-
-            document.getElementById('dashTotalProdutos').innerText = totalProdutos;
-            document.getElementById('dashTotalAlertas').innerText = criticalAlerts.length;
-            document.getElementById('dashTotalEntradas').innerText = totalEntradas;
-            document.getElementById('dashTotalSaidas').innerText = totalSaidas;
-
-            // Highlight Alert Card if critical items exist
-            const cardBg = document.getElementById('dashAlertCardBg');
-            const iconBg = document.getElementById('dashAlertIconBg');
-            if (criticalAlerts.length > 0) {
-                cardBg.className = "bg-rose-50/50 p-5 rounded-2xl shadow-sm border border-rose-200 flex items-center justify-between";
-                iconBg.className = "w-12 h-12 bg-rose-600 text-white rounded-xl flex items-center justify-center text-xl font-bold shadow-md animate-pulse";
-            } else {
-                cardBg.className = "bg-white p-5 rounded-2xl shadow-sm border border-slate-200 flex items-center justify-between";
-                iconBg.className = "w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl font-bold";
-                document.getElementById('dashTotalAlertasSub').className = "text-xs text-emerald-600 font-semibold mt-1";
-                document.getElementById('dashTotalAlertasSub').innerHTML = '<i class="fa-solid fa-check"></i> Nível OK';
-            }
-
-            // Render Recent Movements Table (Top 5)
-            const recentBody = document.getElementById('dashTableRecentMovs');
-            recentBody.innerHTML = '';
-            const recent = movementsList.slice(0, 5);
-
-            if (recent.length === 0) {
-                recentBody.innerHTML = '<tr><td colspan="5" class="py-4 text-center text-slate-400">Nenhuma movimentação.</td></tr>';
-            } else {
-                recent.forEach(m => {
-                    const tr = document.createElement('tr');
-                    tr.className = "hover:bg-slate-50";
-                    tr.innerHTML = `
-                        <td class="py-2.5 text-slate-500">${new Date(m.data_hora).toLocaleDateString('pt-BR')} ${new Date(m.data_hora).toLocaleTimeString('pt-BR', {hour:'2-digit', minute:'2-digit'})}</td>
-                        <td class="py-2.5 font-medium text-slate-800">${m.produto_nome}</td>
-                        <td class="py-2.5">
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold ${m.tipo === 'ENTRADA' ? 'bg-emerald-100 text-emerald-700' : 'bg-rose-100 text-rose-700'}">${m.tipo}</span>
-                        </td>
-                        <td class="py-2.5 text-right font-bold">${m.quantidade}</td>
-                        <td class="py-2.5 text-slate-600">${m.usuario_nome}</td>
-                    `;
-                    recentBody.appendChild(tr);
-                });
-            }
-
-            // Render Critical Items Widget
-            const criticalContainer = document.getElementById('dashCriticalItemsList');
-            criticalContainer.innerHTML = '';
-
-            if (criticalAlerts.length === 0) {
-                criticalContainer.innerHTML = `
-                    <div class="text-center py-6 text-slate-400 text-xs">
-                        <i class="fa-solid fa-shield-halved text-2xl mb-1 text-emerald-500"></i>
-                        <p class="font-semibold text-slate-600">Estoque Saudável</p>
-                        <p>Nenhum item abaixo do mínimo.</p>
-                    </div>
-                `;
-            } else {
-                criticalAlerts.forEach(p => {
-                    const div = document.createElement('div');
-                    div.className = "p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center justify-between";
-                    div.innerHTML = `
-                        <div>
-                            <p class="font-bold text-xs text-rose-900">${p.nome}</p>
-                            <p class="text-[10px] text-rose-600 font-mono">${p.codigo_sku}</p>
-                        </div>
-                        <div class="text-right">
-                            <p class="text-xs font-bold text-rose-700">${p.estoque_atual} / <span class="text-slate-500">${p.estoque_minimo}</span></p>
-                            <span class="text-[9px] text-rose-500 uppercase font-bold">Abaixo do mín.</span>
-                        </div>
-                    `;
-                    criticalContainer.appendChild(div);
-                });
-            }
-        }
-
-        function showToast(message, type = 'info') {
-            const container = document.getElementById('toastContainer');
-            const toast = document.createElement('div');
-
-            const bgColors = {
-                success: 'bg-slate-900 text-white border-l-4 border-emerald-500',
-                error: 'bg-slate-900 text-white border-l-4 border-rose-500',
-                info: 'bg-slate-900 text-white border-l-4 border-indigo-500'
-            };
-
-            const icons = {
-                success: '<i class="fa-solid fa-circle-check text-emerald-400 mr-2"></i>',
-                error: '<i class="fa-solid fa-circle-xmark text-rose-400 mr-2"></i>',
-                info: '<i class="fa-solid fa-circle-info text-indigo-400 mr-2"></i>'
-            };
-
-            toast.className = `p-4 rounded-xl shadow-xl text-xs font-semibold flex items-center transition-all duration-300 pointer-events-auto ${bgColors[type] || bgColors.info}`;
-            toast.innerHTML = `${icons[type] || ''} <span>${message}</span>`;
-
-            container.appendChild(toast);
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0', 'translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        function openConfirmModal(title, msg) {
-            return new Promise((resolve) => {
-                document.getElementById('confirmModalTitle').innerText = title;
-                document.getElementById('confirmModalMsg').innerText = msg;
-                document.getElementById('confirmModal').classList.remove('hidden');
-
-                const okBtn = document.getElementById('confirmModalOkBtn');
-                
-                const handleOk = () => {
-                    closeConfirmModal(true);
-                    okBtn.removeEventListener('click', handleOk);
-                    resolve(true);
-                };
-
-                okBtn.onclick = handleOk;
-                confirmResolver = resolve;
-            });
-        }
-
-        function closeConfirmModal(result = false) {
-            document.getElementById('confirmModal').classList.add('hidden');
-            if (confirmResolver) {
-                confirmResolver(result);
-                confirmResolver = null;
-            }
-        }
-    </script>
 </body>
 </html>
